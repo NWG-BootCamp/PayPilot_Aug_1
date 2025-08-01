@@ -56,3 +56,40 @@ JOIN
 WHERE 
     TRUNC(b.due_date) - rs.days_before_due = TRUNC(CURRENT_DATE);
 
+-- Create a procedure to print all users who need reminders for bills due in 3 days.
+CREATE OR REPLACE PROCEDURE Send_Reminders_For_3_Days_Left AS
+BEGIN
+    FOR rec IN (
+        SELECT 
+            u.user_id,
+            u.name,
+            u.email,
+            b.bill_name,
+            b.due_date,
+            rs.custom_message,
+            rs.notification_preference
+        FROM 
+            ReminderSettings rs
+        JOIN 
+            Bills b ON rs.bill_id = b.bill_id
+        JOIN 
+            Users u ON rs.user_id = u.user_id
+        WHERE 
+            rs.days_before_due = 3
+            AND TRUNC(b.due_date) - rs.days_before_due = TRUNC(SYSDATE)
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('Reminder for User: ' || rec.name || ' Email: ' || rec.email);
+        DBMS_OUTPUT.PUT_LINE('Bill: ' || rec.bill_name || ' Due Date: ' || TO_CHAR(rec.due_date, 'YYYY-MM-DD'));
+        DBMS_OUTPUT.PUT_LINE('Message: ' || rec.custom_message);
+        DBMS_OUTPUT.PUT_LINE('Notification Method: ' || rec.notification_preference);
+        DBMS_OUTPUT.PUT_LINE('------------------------------------------');
+    END LOOP;
+END;
+/
+
+-- To run the procedure
+BEGIN
+    Send_Reminders_For_3_Days_Left;
+END;
+/
+
