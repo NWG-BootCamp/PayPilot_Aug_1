@@ -157,7 +157,7 @@ CREATE VIEW fully_paid_bills AS
 SELECT
   u.name,
   b.bill_id,
-  b.category,
+  b.bill_category,
   b.amount,
   p.amount_paid,
   p.payment_date
