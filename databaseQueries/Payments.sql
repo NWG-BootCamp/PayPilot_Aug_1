@@ -10,7 +10,7 @@ CREATE TABLE payments (
     user_id VARCHAR2(50) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (bill_id) REFERENCES bills(bill_id),
-    CHECK (amount_paid>=0)
+    CONSTRAINT chk_amount_paid CHECK (amount_paid>=0)
 );
 
 -- insert valid and invalid data into payments table
