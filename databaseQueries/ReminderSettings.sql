@@ -18,8 +18,8 @@ ADD CONSTRAINT chk_days_before_due
 CHECK (days_before_due BETWEEN 1 AND 10);
 
 -- Insert sample bills for users (assuming all due in August 2025)
-DELETE FROM Bills; -- Clear existing data if any
 DELETE FROM Payments; -- insert will not make sense if bills are not there
+DELETE FROM Bills; -- Clear existing data if any
 INSERT INTO Bills VALUES ('B001', 'Electricity Bill', 'Utilities', TO_DATE('2025-08-05','YYYY-MM-DD'), 1200, 'Monthly', NULL, NULL, 1, 0, NULL, 'U001');
 INSERT INTO Bills VALUES ('B002', 'Water Bill', 'Utilities', TO_DATE('2025-08-07','YYYY-MM-DD'), 800, 'Monthly', NULL, NULL, 1, 0, NULL, 'U002');
 INSERT INTO Bills VALUES ('B003', 'Gas Bill', 'Utilities', TO_DATE('2025-08-03','YYYY-MM-DD'), 600, 'Monthly', NULL, NULL, 1, 0, NULL, 'U00');
