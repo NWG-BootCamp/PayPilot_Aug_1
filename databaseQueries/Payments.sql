@@ -16,7 +16,7 @@ CREATE TABLE payments (
 );
 
 -- ========================================
--- ✅ VALID INSERT
+-- VALID INSERT
 -- Matches B003 (amount = 2500), user_id = 'U002'
 -- ========================================
 INSERT INTO payments (
@@ -32,7 +32,7 @@ INSERT INTO payments (
     'P001',
     TO_DATE('2025-08-01', 'YYYY-MM-DD'),
     'Credit Card',
-    '9876543210',
+    '1111222233',
     2500.00,
     'Completed',
     'B003',
@@ -40,7 +40,7 @@ INSERT INTO payments (
 );
 
 -- ========================================
--- ❌ INVALID INSERT
+-- INVALID INSERT
 -- bill_id = 'B999' does not exist
 -- ========================================
 INSERT INTO payments (
@@ -64,7 +64,7 @@ INSERT INTO payments (
 );
 
 -- ========================================
--- ❌ INVALID INSERT
+-- INVALID INSERT
 -- user_id = 'U999' does not exist
 -- ========================================
 INSERT INTO payments (
@@ -88,7 +88,7 @@ INSERT INTO payments (
 );
 
 -- ========================================
--- ❌ INVALID INSERT
+-- INVALID INSERT
 -- amount_paid = -500 (violates CHECK constraint)
 -- ========================================
 INSERT INTO payments (
@@ -104,7 +104,7 @@ INSERT INTO payments (
     'P004',
     TO_DATE('2025-08-01', 'YYYY-MM-DD'),
     'Cash',
-    '0000111122',
+    '1234567890',
     -500.00,
     'Failed',
     'B001',
@@ -112,7 +112,7 @@ INSERT INTO payments (
 );
 
 -- ========================================
--- ❌ INVALID INSERT
+--  INVALID INSERT
 -- amount_paid = 13000 > bill amount = 12000 for B001 (violates trigger/business rule)
 -- ========================================
 INSERT INTO payments (
@@ -128,7 +128,7 @@ INSERT INTO payments (
     'P005',
     TO_DATE('2025-08-01', 'YYYY-MM-DD'),
     'Debit Card',
-    '9999888877',
+    '1234567890',
     13000.00,
     'Failed',
     'B001',
