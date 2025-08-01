@@ -17,7 +17,7 @@ CREATE TABLE payments (
 
 -- ========================================
 -- VALID INSERT
--- Matches B003 (amount = 2500), user_id = 'U002'
+-- Matches B003 (amount = 2500), user_id = 'U002', payment made before due date
 -- ========================================
 INSERT INTO payments (
     payment_id,
@@ -30,7 +30,7 @@ INSERT INTO payments (
     user_id
 ) VALUES (
     'P001',
-    TO_DATE('2025-08-01', 'YYYY-MM-DD'),
+    TO_DATE('2025-07-28', 'YYYY-MM-DD'),
     'Credit Card',
     '1111222233',
     2500.00,
