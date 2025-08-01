@@ -126,12 +126,80 @@ INSERT INTO payments (
 
 -- write a query to join users, bills, and payments to list: user, bill category, amount, payment date.
 
+SELECT 
+    u.name AS user_name,
+    b.bill_category,
+    b.amount,
+    p.payment_date
+FROM 
+    users u
+JOIN 
+    bills b ON u.user_id = b.user_id
+JOIN 
+    payments p ON b.bill_id = p.bill_id;
+
+
 -- create a view showing all fully paid bills with user name and bill details
+
+CREATE VIEW fully_paid_bills AS
+SELECT
+  u.name,
+  b.bill_id,
+  b.category,
+  b.amount,
+  p.amount_paid,
+  p.payment_date
+FROM bills b
+JOIN users u ON b.user_id = u.user_id
+JOIN payments p ON b.bill_id = p.bill_id
+WHERE b.is_paid = TRUE;
+
 
 -- create a trigger stub to update is_paid = true in bills after payment is made.
 
+CREATE OR REPLACE TRIGGER trg_update_bill_status_after_payment
+AFTER INSERT ON payments
+FOR EACH ROW
+DECLARE
+    v_total_paid  NUMBER := 0;
+    v_bill_amount NUMBER := 0;
+BEGIN
+
+    SELECT NVL(SUM(amount_paid), 0)
+    INTO v_total_paid
+    FROM payments
+    WHERE bill_id = :NEW.bill_id;
+
+
+    SELECT amount
+    INTO v_bill_amount
+    FROM bills
+    WHERE bill_id = :NEW.bill_id;
+
+
+    IF v_total_paid >= v_bill_amount THEN
+        UPDATE bills
+        SET is_paid = 1
+        WHERE bill_id = :NEW.bill_id;
+    END IF;
+END;
+/
+
 --  add a check to ensure amount_paid <= bill.amount
 
+CREATE OR REPLACE TRIGGER trg_check_payment_amount
+BEFORE INSERT OR UPDATE ON payments
+FOR EACH ROW
+DECLARE
+    v_bill_amount NUMBER(10,2);
+BEGIN
+    SELECT amount INTO v_bill_amount FROM bills WHERE bill_id = :NEW.bill_id;
+
+    IF :NEW.amount_paid > v_bill_amount THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Payment amount cannot be greater than bill amount.');
+    END IF;
+END;
+/
 
 
 
