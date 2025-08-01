@@ -12,6 +12,15 @@ CREATE TABLE ReminderSettings (
 );
 
 
+
+-- Add a CHECK constraint to ensure days_before_due is between 1 and 10
+
+ALTER TABLE ReminderSettings
+ADD CONSTRAINT chk_days_before_due
+CHECK (days_before_due BETWEEN 1 AND 10);
+
+
+
 -- Sample reminder_settings table
 -- reminder_id | user_id | days_before_due
 
@@ -37,9 +46,4 @@ JOIN tasks t ON rs.user_id = t.user_id
 WHERE t.due_date = CURRENT_DATE + rs.days_before_due;
 
 
--- Add a CHECK constraint to ensure days_before_due is between 1 and 10
-
-ALTER TABLE ReminderSettings
-ADD CONSTRAINT chk_days_before_due
-CHECK (days_before_due BETWEEN 1 AND 10);
 
