@@ -22,6 +22,25 @@ GROUP BY
 ORDER BY
     "Total Due Amount" DESC;
 
+
+-- task-> Create a materialized view to precompute total unpaid bills for each user.
+-- ANIMESH
+CREATE MATERIALIZED VIEW mv_total_unpaid_bills_per_user
+BUILD IMMEDIATE
+REFRESH ON DEMAND
+AS
+SELECT 
+    user_id,
+    COUNT(*) AS unpaid_bill_count,
+    SUM(amount) AS total_unpaid_amount
+FROM 
+    Bills
+WHERE 
+    is_paid = 0
+GROUP BY 
+    user_id;
+
+
 --task->nested query to show users who have never paid any bill.
 -- SALONI
 SELECT name, email
@@ -31,6 +50,7 @@ WHERE user_id NOT IN (
     FROM bills
     WHERE is_paid = 1
 );
+
 --task->Index creation on due date.
 --Shivam
 
