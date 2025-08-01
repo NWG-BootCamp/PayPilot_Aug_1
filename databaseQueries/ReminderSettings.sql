@@ -17,44 +17,34 @@ ALTER TABLE ReminderSettings
 ADD CONSTRAINT chk_days_before_due
 CHECK (days_before_due BETWEEN 1 AND 10);
 
--- Sample Users
-INSERT INTO Users (user_id, email, password, name, phone)
-VALUES
-('U1', 'user1@example.com', 'pass1', 'User One', '9876543210'),
-('U2', 'user2@example.com', 'pass2', 'User Two', '9876543211'),
-('U3', 'user3@example.com', 'pass3', 'User Three', '9876543212');
+-- Insert sample bills for users (assuming all due in August 2025)
+INSERT INTO Bills VALUES ('B001', 'Electricity Bill', 'Utilities', TO_DATE('2025-08-05','YYYY-MM-DD'), 1200, 'Monthly', NULL, NULL, 1, 0, NULL, 'U001');
+INSERT INTO Bills VALUES ('B002', 'Water Bill', 'Utilities', TO_DATE('2025-08-07','YYYY-MM-DD'), 800, 'Monthly', NULL, NULL, 1, 0, NULL, 'U002');
+INSERT INTO Bills VALUES ('B003', 'Gas Bill', 'Utilities', TO_DATE('2025-08-03','YYYY-MM-DD'), 600, 'Monthly', NULL, NULL, 1, 0, NULL, 'U003');
 
--- Sample Bills
-INSERT INTO Bills (bill_id, bill_name, due_date, amount, user_id)
-VALUES
-('B1', 'Electricity Bill', CURRENT_DATE + 3, 1000, 'U1'),
-('B2', 'Water Bill', CURRENT_DATE + 5, 500, 'U2'),
-('B3', 'Internet Bill', CURRENT_DATE + 1, 800, 'U3');
-
--- Sample ReminderSettings
-INSERT INTO ReminderSettings (reminder_id, user_id, days_before_due, reminder_frequency, reminder_start_date, custom_message, notification_preference, bill_id)
-VALUES
-('R1', 'U1', 3, 'Once', CURRENT_DATE, 'Pay Electricity Bill', 'Email', 'B1'),
-('R2', 'U2', 5, 'Once', CURRENT_DATE, 'Pay Water Bill', 'SMS', 'B2'),
-('R3', 'U3', 2, 'Once', CURRENT_DATE, 'Pay Internet Bill', 'Push', 'B3');
-
--- who will be reminded today
-SELECT 
+-- Insert reminders: user gets reminded a fixed number of days before due date
+INSERT INTO ReminderSettings VALUES ('R001', 'U001', 4, 'Once', TO_DATE('2025-07-25','YYYY-MM-DD'), 'Pay your bill soon!', 'Email', 'B001');
+INSERT INTO ReminderSettings VALUES ('R002', 'U002', 6, 'Once', TO_DATE('2025-07-30','YYYY-MM-DD'), 'Water bill due!', 'SMS', 'B002');
+INSERT INTO ReminderSettings VALUES ('R003', 'U003', 2, 'Once', TO_DATE('2025-07-20','YYYY-MM-DD'), 'Remember gas bill!', 'App', 'B003');
+ -- to give reminders today 
+SELECT
     u.user_id,
     u.name,
     u.email,
+    r.reminder_id,
+    b.bill_id,
     b.bill_name,
     b.due_date,
-    rs.custom_message,
-    rs.notification_preference
-FROM 
-    ReminderSettings rs
-JOIN 
-    Bills b ON rs.bill_id = b.bill_id
-JOIN 
-    Users u ON rs.user_id = u.user_id
-WHERE 
-    TRUNC(b.due_date) - rs.days_before_due = TRUNC(CURRENT_DATE);
+    r.days_before_due,
+    TO_CHAR(b.due_date - r.days_before_due, 'YYYY-MM-DD') AS reminder_date,
+    r.notification_preference
+FROM
+    ReminderSettings r
+    JOIN Bills b ON r.bill_id = b.bill_id
+    JOIN Users u ON r.user_id = u.user_id
+WHERE
+    TO_DATE('2025-08-01', 'YYYY-MM-DD') = (b.due_date - r.days_before_due)
+    AND r.reminder_start_date <= TO_DATE('2025-08-01', 'YYYY-MM-DD');
 
 -- Create a procedure to print all users who need reminders for bills due in 3 days.
 CREATE OR REPLACE PROCEDURE Send_Reminders_For_3_Days_Left AS
