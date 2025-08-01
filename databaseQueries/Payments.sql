@@ -1,3 +1,5 @@
+-- GROUP 3
+
 -- ========================================
 -- CREATE PAYMENTS TABLE
 -- ========================================
@@ -135,9 +137,9 @@ INSERT INTO payments (
     'U001'
 );
 
-
+-- ========================================
 -- write a query to join users, bills, and payments to list: user, bill category, amount, payment date.
-
+-- ========================================
 SELECT 
     u.name AS user_name,
     b.bill_category,
@@ -150,8 +152,9 @@ JOIN
 JOIN 
     payments p ON b.bill_id = p.bill_id;
 
-
+-- ========================================
 -- create a view showing all fully paid bills with user name and bill details
+-- ========================================
 
 CREATE OR REPLACE VIEW fully_paid_bills AS
 SELECT
@@ -167,7 +170,9 @@ JOIN payments p ON b.bill_id = p.bill_id
 WHERE b.is_paid = 1;
 
 
+-- ========================================
 -- create a trigger stub to update is_paid = true in bills after payment is made.
+-- ========================================
 
 CREATE OR REPLACE TRIGGER trg_update_bill_status_after_payment
 AFTER INSERT ON payments
@@ -196,9 +201,11 @@ BEGIN
     END IF;
 END;
 /
-
+    
+-- ========================================
 --  add a check to ensure amount_paid <= bill.amount
-
+-- ========================================
+    
 CREATE OR REPLACE TRIGGER trg_check_payment_amount
 BEFORE INSERT OR UPDATE ON payments
 FOR EACH ROW
