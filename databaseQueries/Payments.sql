@@ -164,7 +164,7 @@ SELECT
 FROM bills b
 JOIN users u ON b.user_id = u.user_id
 JOIN payments p ON b.bill_id = p.bill_id
-WHERE b.is_paid = TRUE;
+WHERE b.is_paid = 1;
 
 
 -- create a trigger stub to update is_paid = true in bills after payment is made.
