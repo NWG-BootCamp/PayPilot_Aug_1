@@ -31,4 +31,15 @@ WHERE user_id NOT IN (
     FROM bills
     WHERE is_paid = 1
 );
+--task->Index creation on due date.
+--Shivam
 
+CREATE INDEX due_date_idx ON bill(due_date);
+
+-- HOW AN INDEX ON DUE_DATE OPTIMIZES PERFORMANCE --
+-- 1. Enables faster lookups based on due_date. For example, when fetching records 
+--    from the past few days to send reminders, the index allows quick access without scanning the entire table.
+-- 2. Improves the efficiency of range queries, making it faster to retrieve records 
+--    where due_date falls within a specified range.
+-- 3. Speeds up queries that sort results by due_date, as the index maintains the column values 
+--    in sorted order, reducing or eliminating the need for an additional sort operation.
