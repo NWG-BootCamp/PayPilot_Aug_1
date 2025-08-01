@@ -153,7 +153,7 @@ JOIN
 
 -- create a view showing all fully paid bills with user name and bill details
 
-CREATE VIEW fully_paid_bills AS
+CREATE OR REPLACE VIEW fully_paid_bills AS
 SELECT
   u.name,
   b.bill_id,
