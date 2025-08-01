@@ -5,5 +5,6 @@ FROM users
 WHERE user_id NOT IN (
     SELECT DISTINCT user_id
     FROM bills
-    WHERE is_paid = TRUE
+    WHERE is_paid = 1
 );
+
